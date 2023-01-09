@@ -225,8 +225,8 @@ zinit ice wait"2" as"command" pick"tldr" lucid
 zinit light raylee/tldr
 
 if [[ $WSL_ENABLE ]]; then
-  zinit ice wait"2" atload"_zsh-notify-setting" lucid
-  zinit light marzocchi/zsh-notify
+  # zinit ice wait"2" atload"_zsh-notify-setting" lucid
+  # zinit light marzocchi/zsh-notify
 fi
 
 load-file "$BVZSH/BlaCk-Void.zplugins" ~/.zplugins
