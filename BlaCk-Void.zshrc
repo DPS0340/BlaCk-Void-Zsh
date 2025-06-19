@@ -48,7 +48,8 @@ if type docker &>/dev/null; then
   export DOCKER_ENABLE=true
 fi
 
-if [[ -f "/mnt/c/WINDOWS/system32/wsl.exe" ]]; then
+if [[ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]]; then
+  # https://superuser.com/questions/1749781/how-can-i-check-if-the-environment-is-wsl-from-a-shell-script
   # We're in WSL, which defaults to umask 0 and causes issues with compaudit
   umask 0022
 
@@ -164,9 +165,12 @@ fi
 if [[ $DOCKER_ENABLE ]]; then
   _OMZ_SOURCES=(
     $_OMZ_SOURCES
-    plugins/docker/_docker
+    plugins/docker/docker.plugin.zsh
     plugins/docker-compose/docker-compose.plugin.zsh
   )
+  if [[ ! -d "${ZSH_CACHE_DIR:-$HOME/.cache/zinit}/completions" ]]; then
+    mkdir -p "${ZSH_CACHE_DIR:-$HOME/.cache/zinit}/completions"
+  fi
 fi
 
 zinit ice from"gh" pick"/dev/null" nocompletions blockf lucid \
@@ -209,8 +213,6 @@ zinit light seletskiy/zsh-git-smart-commands
 zinit ice wait"1b" atload"_fzf-widgets-setting" lucid
 zinit light ytet5uy4/fzf-widgets
 
-zinit ice wait"2" as"completion" lucid
-zinit snippet https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker
 zinit ice wait"2" lucid
 zinit light wfxr/forgit
 zinit ice wait"2" lucid
@@ -224,9 +226,9 @@ zinit light paoloantinori/hhighlighter
 zinit ice wait"2" as"command" pick"tldr" lucid
 zinit light raylee/tldr
 
-if [[ $WSL_ENABLE ]]; then
-  # zinit ice wait"2" atload"_zsh-notify-setting" lucid
-  # zinit light marzocchi/zsh-notify
+if [[ ! $WSL_ENABLE ]]; then
+  zinit ice wait"2" atload"_zsh-notify-setting" lucid
+  zinit light marzocchi/zsh-notify
 fi
 
 load-file "$BVZSH/BlaCk-Void.zplugins" ~/.zplugins
