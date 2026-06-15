@@ -42,6 +42,9 @@ _zsh-theme $BVZSH_THEME
 ## -- Plugin Set ---------------------------------------------------------------
 if type tmux &>/dev/null; then
   export TMUX_ENABLE=true
+  # Disable oh-my-zsh tmux plugin auto-attach (we handle it in .zshrc)
+  export ZSH_TMUX_AUTOSTART=false
+  export ZSH_TMUX_AUTOATTACH=false
 fi
 
 if type docker &>/dev/null; then
@@ -226,7 +229,7 @@ zinit light paoloantinori/hhighlighter
 zinit ice wait"2" as"command" pick"tldr" lucid
 zinit light raylee/tldr
 
-if [[ ! $WSL_ENABLE ]]; then
+if [[ ! $WSL_ENABLE && "$(uname)" != "Darwin" ]]; then
   zinit ice wait"2" atload"_zsh-notify-setting" lucid
   zinit light marzocchi/zsh-notify
 fi
